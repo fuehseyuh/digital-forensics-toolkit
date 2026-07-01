@@ -1,0 +1,154 @@
+/* DFIT — Design tokens
+   Aesthetic: physical evidence tag / case folder, not a generic dashboard.
+   Palette grounded in kraft-paper case folders + red evidence-tag ink +
+   a cold "forensic light" cyan used only for verified/integrity states. */
+
+:root {
+  --color-bg: #12110f;           /* near-black, warm not blue */
+  --color-surface: #1c1a17;      /* case folder panel */
+  --color-surface-raised: #24211d;
+  --color-border: #38342d;
+  --color-border-strong: #4a453c;
+
+  --color-text: #ece7dd;         /* aged paper */
+  --color-text-dim: #a39e91;
+  --color-text-faint: #6b665a;
+
+  --color-tag-red: #b3372c;      /* evidence-tag stamp red */
+  --color-tag-red-bright: #d1483b;
+  --color-verified: #4fa3a8;     /* cold forensic cyan, integrity OK */
+  --color-warning: #c98a3a;      /* amber, flagged/mismatch */
+
+  --font-display: 'IBM Plex Mono', 'Courier New', monospace;
+  --font-body: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+
+  --radius: 3px;
+  --shadow-tag: 0 1px 0 rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.3);
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--color-bg);
+  background-image:
+    radial-gradient(ellipse at top left, rgba(179,55,44,0.04), transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(79,163,168,0.03), transparent 50%);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; }
+
+::selection { background: var(--color-tag-red); color: #fff; }
+
+/* focus visibility, kept even though palette is dark */
+:focus-visible {
+  outline: 2px solid var(--color-verified);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* --- Evidence-tag label, used as the signature element throughout --- */
+.evidence-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius);
+  color: var(--color-text-dim);
+  background: var(--color-surface-raised);
+}
+
+.evidence-tag.tag-verified { color: var(--color-verified); border-color: var(--color-verified); }
+.evidence-tag.tag-warning { color: var(--color-warning); border-color: var(--color-warning); }
+.evidence-tag.tag-red { color: var(--color-tag-red-bright); border-color: var(--color-tag-red); }
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.btn:hover { border-color: var(--color-text-dim); }
+.btn-primary {
+  background: var(--color-tag-red);
+  border-color: var(--color-tag-red);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--color-tag-red-bright); border-color: var(--color-tag-red-bright); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+input, textarea {
+  font-family: var(--font-body);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius);
+  color: var(--color-text);
+  padding: 10px 12px;
+  font-size: 14px;
+  width: 100%;
+}
+input:focus, textarea:focus { border-color: var(--color-verified); outline: none; }
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-tag);
+}
+
+.mono { font-family: var(--font-mono); }
+
+.hash-value {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-text-dim);
+  word-break: break-all;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 6px 8px;
+}
+
+/* perforated tear divider — nods to a physical evidence tag being torn off */
+.perforation {
+  height: 1px;
+  background-image: repeating-linear-gradient(90deg, var(--color-border-strong) 0 6px, transparent 6px 12px);
+  margin: 20px 0;
+}
