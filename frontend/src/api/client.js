@@ -30,6 +30,12 @@ export const evidenceApi = {
   upload: (caseId, file, onUploadProgress) => {
     const formData = new FormData();
     formData.append('file', file);
+    // file.lastModified is the real last-modified time from the source
+    // device's filesystem, captured before the file ever touches our
+    // server — more forensically meaningful than server ingestion time.
+    if (file.lastModified) {
+      formData.append('originalLastModified', new Date(file.lastModified).toISOString());
+    }
     return api.post(`/evidence/case/${caseId}/upload`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
       onUploadProgress,

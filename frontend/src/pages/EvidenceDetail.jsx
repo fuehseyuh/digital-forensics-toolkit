@@ -93,10 +93,19 @@ export default function EvidenceDetail() {
       {/* Filesystem metadata */}
       {fsMeta && (
         <Section title="Filesystem metadata (MAC times)">
-          <InfoRow label="Created" value={fsMeta.metadata_json.created_at} />
-          <InfoRow label="Modified" value={fsMeta.metadata_json.modified_at} />
-          <InfoRow label="Accessed" value={fsMeta.metadata_json.accessed_at} />
-          <InfoRow label="Changed (inode)" value={fsMeta.metadata_json.changed_at} />
+          {fsMeta.metadata_json.original_last_modified && (
+            <>
+              <InfoRow
+                label="Original last modified (source device)"
+                value={fsMeta.metadata_json.original_last_modified}
+              />
+              <div className="perforation" style={{ margin: '8px 0' }} />
+            </>
+          )}
+          <InfoRow label="Created (server copy)" value={fsMeta.metadata_json.created_at} />
+          <InfoRow label="Modified (server copy)" value={fsMeta.metadata_json.modified_at} />
+          <InfoRow label="Accessed (server copy)" value={fsMeta.metadata_json.accessed_at} />
+          <InfoRow label="Changed / inode (server copy)" value={fsMeta.metadata_json.changed_at} />
         </Section>
       )}
 

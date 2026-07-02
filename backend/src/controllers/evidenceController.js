@@ -57,8 +57,16 @@ async function uploadEvidence(req, res) {
       [evidence.evidence_id, hashes.md5, hashes.sha1, hashes.sha256]
     );
 
-    // 4. Extract filesystem metadata
+    // 4. Extract filesystem metadata (server-side ingestion timestamps),
+    // plus the client-reported original last-modified time — the real
+    // last-modified value from the source device's filesystem, sent by
+    // the browser's File API before the file ever reached our server.
+    // This is more forensically meaningful than the server's own stat()
+    // times, which only reflect when *we* received the copy.
     const fsMeta = extractFilesystemMetadata(filePath);
+    if (req.body.originalLastModified) {
+      fsMeta.original_last_modified = req.body.originalLastModified;
+    }
     await client.query(
       `INSERT INTO evidence_metadata (evidence_id, metadata_type, metadata_json)
        VALUES ($1, 'filesystem', $2)`,
