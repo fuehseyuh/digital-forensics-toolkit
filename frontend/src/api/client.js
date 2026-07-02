@@ -23,6 +23,7 @@ export const caseApi = {
   get: (id) => api.get(`/cases/${id}`),
   create: (title, description) => api.post('/cases', { title, description }),
   updateStatus: (id, status) => api.patch(`/cases/${id}/status`, { status }),
+  delete: (id) => api.delete(`/cases/${id}`),
 };
 
 export const evidenceApi = {

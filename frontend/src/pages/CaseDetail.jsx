@@ -1,14 +1,19 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { caseApi, evidenceApi } from '../api/client.js';
+import BackLink from '../components/BackLink.jsx';
+import { handleTileMouseMove } from '../utils/hoverGlow.js';
 
 export default function CaseDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [caseData, setCaseData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState('');
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -46,14 +51,58 @@ export default function CaseDetail() {
     }
   }
 
+  async function handleDelete() {
+    setDeleting(true);
+    setError('');
+    try {
+      await caseApi.delete(id);
+      navigate('/');
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to delete case.');
+      setDeleting(false);
+      setConfirmingDelete(false);
+    }
+  }
+
   if (loading) return <p style={{ color: 'var(--color-text-dim)' }}>Loading case…</p>;
   if (!caseData) return <p>Case not found.</p>;
 
   return (
     <div>
-      <Link to="/" style={{ fontSize: 13, color: 'var(--color-text-dim)', textDecoration: 'none' }}>
-        ← Back to registry
-      </Link>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <BackLink to="/">Back to registry</BackLink>
+        {!confirmingDelete ? (
+          <button
+            className="btn"
+            style={{ fontSize: 12, padding: '6px 12px', color: 'var(--color-tag-red-bright)' }}
+            onClick={() => setConfirmingDelete(true)}
+          >
+            Delete case
+          </button>
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 12, color: 'var(--color-text-dim)' }}>
+              Delete permanently, including all evidence and custody logs?
+            </span>
+            <button
+              className="btn"
+              style={{ fontSize: 12, padding: '6px 12px' }}
+              onClick={() => setConfirmingDelete(false)}
+              disabled={deleting}
+            >
+              Cancel
+            </button>
+            <button
+              className="btn btn-primary"
+              style={{ fontSize: 12, padding: '6px 12px', background: 'var(--color-tag-red)', borderColor: 'var(--color-tag-red)' }}
+              onClick={handleDelete}
+              disabled={deleting}
+            >
+              {deleting ? 'Deleting…' : 'Confirm delete'}
+            </button>
+          </div>
+        )}
+      </div>
 
       <div style={{ margin: '16px 0 24px' }}>
         <span className="evidence-tag mono">{caseData.case_reference}</span>
@@ -102,10 +151,11 @@ export default function CaseDetail() {
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 12 }}>
           {caseData.evidence.map((ev) => (
-            <Link
+           <Link
               key={ev.evidence_id}
               to={`/evidence/${ev.evidence_id}`}
-              className="card"
+              className="card tile-hover"
+              onMouseMove={handleTileMouseMove}
               style={{
                 padding: '14px 18px',
                 display: 'flex',

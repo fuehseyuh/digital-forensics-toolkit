@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authApi } from '../api/client.js';
+import AuthBackground from '../components/AuthBackground.jsx';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -26,8 +27,9 @@ export default function Login() {
   }
 
   return (
-    <div style={{ maxWidth: 380, margin: '60px auto' }}>
-      <div className="card" style={{ padding: 32 }}>
+    <div className="auth-page">
+      <AuthBackground />
+      <div className="glass-card">
         <span className="evidence-tag tag-red">Restricted Access</span>
         <h1 style={{ fontSize: 22, margin: '16px 0 4px' }}>Investigator sign-in</h1>
         <p style={{ fontSize: 13, color: 'var(--color-text-dim)', marginBottom: 24 }}>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { caseApi } from '../api/client.js';
+import { handleTileMouseMove } from '../utils/hoverGlow.js';
 
 export default function Dashboard() {
   const [cases, setCases] = useState([]);
@@ -81,10 +82,11 @@ export default function Dashboard() {
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {cases.map((c) => (
-            <Link
+           <Link
               key={c.case_id}
               to={`/cases/${c.case_id}`}
-              className="card"
+              className="card tile-hover"
+              onMouseMove={handleTileMouseMove}
               style={{
                 padding: '16px 20px',
                 display: 'flex',

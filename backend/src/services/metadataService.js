@@ -66,13 +66,36 @@ function extractFilesystemMetadata(filePath) {
 }
 
 /**
+ * Strips large binary-looking fields (raw thumbnail bytes, JFIF padding,
+ * maker-note buffers) that some cameras/tools embed in EXIF data. Without
+ * this, a single field can dump thousands of numbered byte entries into
+ * the report, which is noise rather than forensic signal.
+ */
+function sanitizeExif(data) {
+  const clean = {};
+  for (const [key, value] of Object.entries(data)) {
+    const isBloated =
+      Array.isArray(value)
+        ? value.length > 64
+        : value && typeof value === 'object'
+        ? Object.keys(value).length > 64
+        : false;
+
+    if (isBloated) continue; // drop raw byte-array/buffer-style fields
+    clean[key] = value;
+  }
+  return clean;
+}
+
+/**
  * Extracts EXIF metadata from image files (camera model, GPS, timestamps, etc.)
  * Returns null gracefully if the file has no EXIF data (e.g. not an image, or stripped).
  */
 async function extractExifMetadata(filePath) {
   try {
     const data = await exifr.parse(filePath, { gps: true });
-    return data || null;
+    if (!data) return null;
+    return sanitizeExif(data);
   } catch (err) {
     return null; // not an image, or no EXIF present — not an error condition
   }

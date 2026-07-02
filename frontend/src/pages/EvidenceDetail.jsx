@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { evidenceApi } from '../api/client.js';
+import BackLink from '../components/BackLink.jsx';
 
 export default function EvidenceDetail() {
   const { evidenceId } = useParams();
@@ -50,7 +51,9 @@ export default function EvidenceDetail() {
 
   return (
     <div>
-      <div style={{ marginBottom: 24 }}>
+      <BackLink to={`/cases/${evidence.case_id}`}>Back to case</BackLink>
+
+      <div style={{ marginBottom: 24, marginTop: 16 }}>
         <span className="evidence-tag">Evidence Record</span>
         <h1 style={{ fontSize: 24, margin: '10px 0 6px' }}>{evidence.original_filename}</h1>
         <div style={{ display: 'flex', gap: 8 }}>

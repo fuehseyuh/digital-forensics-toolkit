@@ -85,4 +85,19 @@ async function updateCaseStatus(req, res) {
   }
 }
 
-module.exports = { createCase, listCases, getCase, updateCaseStatus };
+async function deleteCase(req, res) {
+  try {
+    const { id } = req.params;
+    const result = await pool.query('DELETE FROM cases WHERE case_id = $1 RETURNING case_id', [id]);
+    if (result.rows.length === 0) return res.status(404).json({ error: 'Case not found' });
+
+    // ON DELETE CASCADE on evidence.case_id takes care of evidence,
+    // evidence_hashes, evidence_metadata, and custody_log automatically.
+    res.json({ deleted: true, case_id: result.rows[0].case_id });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to delete case' });
+  }
+}
+
+module.exports = { createCase, listCases, getCase, updateCaseStatus, deleteCase };
