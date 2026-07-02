@@ -146,8 +146,8 @@ export default function EvidenceDetail() {
                   }}
                 />
               </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }}>
                   <span className="mono" style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     {entry.action}
                   </span>
@@ -155,7 +155,7 @@ export default function EvidenceDetail() {
                     {new Date(entry.timestamp).toLocaleString()}
                   </span>
                 </div>
-                <div style={{ fontSize: 13, color: 'var(--color-text-dim)', marginTop: 2 }}>
+                <div style={{ fontSize: 13, color: 'var(--color-text-dim)', marginTop: 2, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
                   {entry.action_details}
                   {entry.investigator_name && ` — ${entry.investigator_name}`}
                 </div>
